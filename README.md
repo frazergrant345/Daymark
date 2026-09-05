@@ -21,7 +21,7 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 
 ## Install In Chrome
 
-1. Download or clone this repository.
+1. [![Download the Latest Release](https://img.shields.io/github/v/release/frazergrant345/Daymark)](https://github.com/frazergrant345/Daymark/releases/latest) or clone this repository.
 2. Open `chrome://extensions` in Chrome.
 3. Turn on **Developer mode**.
 4. Select **Load unpacked**.
