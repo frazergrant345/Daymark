@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#152333" />
+    <title>Daymark - New Tab</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="backdrop" aria-hidden="true"></div>
+    <main class="page-shell">
+      <header class="topbar" data-widget="topbar">
+        <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag header">⠿</button>
+        <div class="brand-mark" aria-label="Daymark home">
+          <span class="brand-dot"></span>
+          <span>daymark</span>
+        </div>
+      </header>
+
+      <section class="hero" aria-labelledby="greeting">
+        <p class="eyebrow" id="date-label" data-widget="date"><span id="date-text">Saturday, September 5</span><button class="drag-handle" type="button" title="Drag to move" aria-label="Drag date">⠿</button></p>
+        <div class="time" id="clock" data-widget="clock" aria-label="Current time"><span id="clock-text">09:41</span><button class="drag-handle" type="button" title="Drag to move" aria-label="Drag time">⠿</button></div>
+        <h1 id="greeting" data-widget="greeting"><span id="greeting-text">Good morning, friend.</span><button class="drag-handle" type="button" title="Drag to move" aria-label="Drag greeting">⠿</button></h1>
+        <p class="prompt" data-widget="prompt">What would you like to make space for?<button class="drag-handle" type="button" title="Drag to move" aria-label="Drag prompt">⠿</button></p>
+        <form class="search" id="search-form" data-widget="search" role="search">
+          <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag search">⠿</button>
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" placeholder="Search the web" autocomplete="off" aria-label="Search the web" />
+          <kbd>Enter</kbd>
+        </form>
+      </section>
+
+      <section class="links-section" data-widget="links" aria-labelledby="links-heading">
+        <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag shortcuts">⠿</button>
+        <div class="section-heading">
+          <h2 id="links-heading">Your places</h2>
+          <button class="text-button" id="add-link-button" type="button">+ Add link</button>
+        </div>
+        <div class="link-grid" id="link-grid"></div>
+      </section>
+
+      <section class="widgets-grid" data-widget="widgets" aria-label="Daymark widgets">
+        <article class="widget-card" data-widget="todo">
+          <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag to-do widget">⠿</button>
+          <div class="widget-heading"><h2>Today</h2><span class="widget-count" id="task-count">0</span></div>
+          <form class="inline-form" id="task-form"><input id="task-input" maxlength="80" placeholder="Add a task" aria-label="Add a task" /><button type="submit" aria-label="Add task">+</button></form>
+          <ul class="task-list" id="task-list"></ul>
+        </article>
+        <article class="widget-card" data-widget="notes">
+          <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag notes widget">⠿</button>
+          <div class="widget-heading"><h2>Notes</h2><span class="save-status" id="notes-status">Saved</span></div>
+          <textarea id="notes-input" placeholder="Keep a thought here..." aria-label="Notes"></textarea>
+        </article>
+        <article class="widget-card timer-card" data-widget="timer">
+          <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag timer widget">⠿</button>
+          <div class="widget-heading"><h2>Focus</h2><span class="save-status" id="timer-status">Ready</span></div>
+          <div class="timer-display" id="timer-display">25:00</div>
+          <div class="timer-actions"><button type="button" id="timer-toggle">Start</button><button type="button" id="timer-reset">Reset</button></div>
+        </article>
+        <article class="widget-card weather-card" data-widget="weather">
+          <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag weather widget">⠿</button>
+          <div class="widget-heading"><h2>Weather</h2><span class="save-status" id="weather-location">Set a city</span></div>
+          <div class="weather-reading" id="weather-reading">--°</div>
+          <form class="inline-form" id="weather-form"><input id="weather-input" maxlength="40" placeholder="City" aria-label="Weather city" /><button type="submit" aria-label="Set city">↗</button></form>
+        </article>
+      </section>
+
+      <footer class="footer" data-widget="quote">
+        <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag quote">⠿</button>
+        <div class="quote-wrap">
+          <span class="quote-mark" aria-hidden="true">“</span>
+          <div><span class="quote-label">Quote of the day</span><p id="quote">Almost everything will work again if you unplug it for a few minutes, including you.</p></div>
+        </div>
+        <span class="credit">A little room to begin.</span>
+      </footer>
+    </main>
+    <button class="icon-button settings-fab" id="settings-button" type="button" aria-label="Open settings" title="Open settings">
+      <span aria-hidden="true">⚙</span>
+    </button>
+
+    <dialog id="link-dialog" class="dialog">
+      <form method="dialog" id="link-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">New shortcut</p>
+            <h2>Add a place</h2>
+          </div>
+          <button class="close-button" id="close-link-dialog" value="cancel" formnovalidate="true" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <label for="link-name">Name</label>
+        <input id="link-name" required maxlength="24" placeholder="e.g. Linear" />
+        <label for="link-url">URL</label>
+        <input id="link-url" type="text" inputmode="url" required placeholder="example.com" />
+        <label for="link-icon">Icon</label>
+        <select id="link-icon">
+          <option value="✦">✦ Spark</option>
+          <option value="✉">✉ Mail</option>
+          <option value="▣">▣ Calendar</option>
+          <option value="▤">▤ Notes</option>
+          <option value="⌘">⌘ Code</option>
+          <option value="◒">◒ Media</option>
+          <option value="↗">↗ Link</option>
+        </select>
+        <button class="primary-button" value="default" type="submit">Add shortcut</button>
+      </form>
+    </dialog>
+
+    <aside class="settings-panel" id="settings-panel" aria-hidden="true">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">Your space</p>
+          <h2>Settings</h2>
+        </div>
+        <button class="close-button" id="close-settings" type="button" aria-label="Close settings">×</button>
+      </div>
+      <label class="setting-row">
+        <span><strong>24-hour clock</strong><small>Use 13:30 instead of 1:30 PM</small></span>
+        <input type="checkbox" id="clock-toggle" />
+      </label>
+      <div class="setting-block wallpaper-settings">
+        <strong>Wallpaper</strong>
+        <small>Choose an image from your computer</small>
+        <div class="wallpaper-presets" role="group" aria-label="Wallpaper presets">
+          <button type="button" data-wallpaper-preset="blue" aria-label="Blue preset"></button>
+          <button type="button" data-wallpaper-preset="dusk" aria-label="Dusk preset"></button>
+          <button type="button" data-wallpaper-preset="sea" aria-label="Sea preset"></button>
+        </div>
+        <label class="upload-button" for="wallpaper-input">Choose wallpaper</label>
+        <input class="file-input" id="wallpaper-input" type="file" accept="image/*" />
+        <label class="range-setting" for="wallpaper-blur">
+          <span>Blur <output id="wallpaper-blur-value">0px</output></span>
+          <input id="wallpaper-blur" type="range" min="0" max="20" value="0" step="1" />
+        </label>
+        <label class="range-setting" for="wallpaper-scale">
+          <span>Scale <output id="wallpaper-scale-value">100%</output></span>
+          <input id="wallpaper-scale" type="range" min="100" max="160" value="100" step="1" />
+        </label>
+        <label class="select-setting" for="wallpaper-position">Position
+          <select id="wallpaper-position"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option><option value="left">Left</option><option value="right">Right</option></select>
+        </label>
+        <button class="reset-button" id="wallpaper-reset" type="button">Use blue background</button>
+      </div>
+      <div class="setting-block layout-settings">
+        <div class="layout-heading"><strong>Layout</strong><button class="layout-edit-button" id="layout-edit-button" type="button">Edit layout</button></div>
+        <label class="setting-row compact-row"><span><strong>Lock position</strong><small>Prevent widgets from moving</small></span><input type="checkbox" id="layout-lock-toggle" /></label>
+        <div class="visibility-list" role="group" aria-label="Show or hide page widgets">
+          <label><input type="checkbox" data-visibility="topbar" checked /> Header</label>
+          <label><input type="checkbox" data-visibility="date" checked /> Date</label>
+          <label><input type="checkbox" data-visibility="clock" checked /> Time</label>
+          <label><input type="checkbox" data-visibility="greeting" checked /> Greeting</label>
+          <label><input type="checkbox" data-visibility="prompt" checked /> Prompt</label>
+          <label><input type="checkbox" data-visibility="search" checked /> Search</label>
+          <label><input type="checkbox" data-visibility="links" checked /> Shortcuts</label>
+          <label><input type="checkbox" data-visibility="widgets" checked /> Widgets</label>
+          <label><input type="checkbox" data-visibility="todo" checked /> Today</label>
+          <label><input type="checkbox" data-visibility="notes" checked /> Notes</label>
+          <label><input type="checkbox" data-visibility="timer" checked /> Focus</label>
+          <label><input type="checkbox" data-visibility="weather" checked /> Weather</label>
+          <label><input type="checkbox" data-visibility="quote" checked /> Quote</label>
+        </div>
+      </div>
+      <div class="setting-block">
+        <strong>Atmosphere</strong>
+        <div class="swatches" role="group" aria-label="Choose atmosphere">
+          <button class="swatch swatch-moss" data-theme="moss" type="button" aria-label="Moss theme"></button>
+          <button class="swatch swatch-night" data-theme="night" type="button" aria-label="Night theme"></button>
+          <button class="swatch swatch-clay" data-theme="clay" type="button" aria-label="Clay theme"></button>
+        </div>
+      </div>
+      <div class="setting-block greeting-settings">
+        <strong>Greeting</strong>
+        <small>Leave empty to use the automatic greeting</small>
+        <input class="text-input" id="greeting-input" maxlength="60" placeholder="e.g. Welcome back, Alex." />
+        <button class="reset-button" id="greeting-reset" type="button">Use automatic greeting</button>
+      </div>
+      <div class="setting-block weather-settings">
+        <strong>Weather location</strong>
+        <small>Used only for the weather widget</small>
+        <input class="text-input" id="weather-city-input" maxlength="40" placeholder="e.g. London" />
+      </div>
+      <div class="setting-block backup-settings">
+        <strong>Backup</strong>
+        <small>Move your Daymark setup to another browser</small>
+        <div class="backup-actions"><button class="upload-button" id="export-button" type="button">Export settings</button><label class="upload-button" for="import-input">Import settings</label><input class="file-input" id="import-input" type="file" accept="application/json" /></div>
+      </div>
+      <button class="defaults-button" id="defaults-button" type="button">Restore all defaults</button>
+      <button class="reset-button" id="reset-button" type="button">Restore starter links</button>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
