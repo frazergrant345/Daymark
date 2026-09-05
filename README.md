@@ -1,6 +1,7 @@
 # Daymark
 
 [![Latest Release](https://img.shields.io/github/v/release/frazergrant345/Daymark)](https://github.com/frazergrant345/Daymark/releases/latest)
+[![Download Beta 1.1.0](https://img.shields.io/badge/download-beta--1.1.0-orange)](https://github.com/frazergrant345/Daymark/releases/tag/Beta-1.1.0)
 
 Daymark is a calm, personal dashboard that replaces your browser's new-tab page with a little room to begin. It combines a clock, search, shortcuts, lightweight planning tools, and customizable visual settings in one focused workspace.
 
