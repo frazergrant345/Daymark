@@ -94,6 +94,8 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .quote-label { display: block; margin-bottom: 6px; color: var(--accent); font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .quote-wrap p { margin: 0; font-size: 12px; line-height: 1.55; }
 .credit { font-family: 'Courier New', monospace; font-size: 10px; white-space: nowrap; }
+.source-link { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: color .15s, border-color .15s; }
+.source-link:hover, .source-link:focus-visible { color: var(--accent); border-bottom-color: var(--accent); }
 .dialog, .settings-panel { color: var(--ink); background: var(--panel); box-shadow: 0 20px 80px rgba(0,0,0,.35); backdrop-filter: blur(22px); }
 .dialog { width: min(430px, calc(100% - 32px)); padding: 26px; border: 1px solid var(--line); border-radius: 18px; }
 .dialog::backdrop { background: rgba(4, 12, 9, .58); backdrop-filter: blur(5px); }
