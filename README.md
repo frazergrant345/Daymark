@@ -1,4 +1,5 @@
 # Daymark
+
 [![Latest Release](https://img.shields.io/github/v/release/frazergrant345/Daymark)](https://github.com/frazergrant345/Daymark/releases/latest)
 
 Daymark is a calm, personal dashboard that replaces your browser's new-tab page with a little room to begin. It combines a clock, search, shortcuts, lightweight planning tools, and customizable visual settings in one focused workspace.
@@ -72,7 +73,3 @@ Daymark has no build step or package dependencies. Edit the source files directl
 ## License
 
 MIT License
-
-<img width="1896" height="1065" alt="Screenshot 2026-09-06 000256" src="https://github.com/user-attachments/assets/b4ce9704-83e6-430d-9745-bfeec7d2fbea" />
-<img width="1906" height="1062" alt="Screenshot 2026-09-06 000326" src="https://github.com/user-attachments/assets/fa86c036-9f68-43e7-9a83-74dbc34cfe9e" />
-
