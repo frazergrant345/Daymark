@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Daymark",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A calm, personal dashboard for your next tab.",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "bookmarks", "notifications"],
   "host_permissions": ["https://geocoding-api.open-meteo.com/*", "https://api.open-meteo.com/*"],
   "icons": {
     "16": "icon.svg",

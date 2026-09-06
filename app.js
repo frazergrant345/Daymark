@@ -17,7 +17,7 @@ const quotes = [
 ];
 
 function createDefaultState() {
-  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', weather: { city: '', temperature: null, description: '' }, timer: { seconds: 1500, running: false }, layout: { locked: false, hidden: [], positions: {} } };
+  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], taskHistory: [], tasksDate: '', notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', searchEngine: 'google', customSearchUrl: '', dailyReset: true, timerNotifications: true, quoteDaily: true, quoteIndex: 0, reducedMotion: false, minimalMode: false, onboardingComplete: false, weather: { city: '', temperature: null, description: '' }, timer: { seconds: 1500, running: false }, layout: { locked: false, hidden: [], positions: {} } };
 }
 
 const state = createDefaultState();
@@ -26,6 +26,10 @@ const clock = document.querySelector('#clock-text');
 const dateLabel = document.querySelector('#date-text');
 const greeting = document.querySelector('#greeting-text');
 const quote = document.querySelector('#quote');
+
+function todayKey() {
+  return new Date().toLocaleDateString('en-CA');
+}
 
 function saveState() {
   const storage = globalThis.chrome?.storage?.local;
@@ -42,7 +46,63 @@ function renderQuote() {
   const now = new Date();
   const yearStart = new Date(now.getFullYear(), 0, 0);
   const dayOfYear = Math.floor((now - yearStart) / 86400000);
-  quote.textContent = quotes[dayOfYear % quotes.length];
+  const index = state.quoteDaily ? dayOfYear % quotes.length : state.quoteIndex % quotes.length;
+  quote.textContent = quotes[index];
+}
+
+function refreshQuote() {
+  state.quoteIndex = (state.quoteIndex + 1) % quotes.length;
+  state.quoteDaily = false;
+  document.querySelector('#quote-rotate-toggle').checked = false;
+  renderQuote();
+  saveState();
+}
+
+function applyPreferences() {
+  document.body.classList.toggle('minimal-mode', state.minimalMode);
+  document.body.classList.toggle('reduce-motion', state.reducedMotion);
+  document.querySelector('#search-engine').value = state.searchEngine;
+  document.querySelector('#custom-search-url').value = state.customSearchUrl;
+  document.querySelector('#daily-reset-toggle').checked = state.dailyReset;
+  document.querySelector('#timer-notification-toggle').checked = state.timerNotifications;
+  document.querySelector('#quote-rotate-toggle').checked = state.quoteDaily;
+  document.querySelector('#reduced-motion-toggle').checked = state.reducedMotion;
+  document.querySelector('#minimal-mode-toggle').checked = state.minimalMode;
+}
+
+function rollOverTasks() {
+  const today = todayKey();
+  if (!state.tasksDate) state.tasksDate = today;
+  if (state.dailyReset && state.tasksDate !== today && state.tasks.length) {
+    state.taskHistory.unshift({ date: state.tasksDate, tasks: state.tasks });
+    state.taskHistory = state.taskHistory.slice(0, 30);
+    state.tasks = [];
+  }
+  state.tasksDate = today;
+}
+
+function searchUrl(query) {
+  const engines = { google: 'https://www.google.com/search?q=%s', duckduckgo: 'https://duckduckgo.com/?q=%s', bing: 'https://www.bing.com/search?q=%s', kagi: 'https://kagi.com/search?q=%s' };
+  const template = state.searchEngine === 'custom' ? state.customSearchUrl : engines[state.searchEngine];
+  return (template || engines.google).replace('%s', encodeURIComponent(query));
+}
+
+function notifyFocusComplete() {
+  if (!state.timerNotifications) return;
+  if (globalThis.chrome?.notifications) {
+    chrome.notifications.create({ type: 'basic', iconUrl: 'icon.svg', title: 'Daymark', message: 'Focus session complete.' });
+  } else if (globalThis.Notification?.permission === 'granted') {
+    new Notification('Daymark', { body: 'Focus session complete.' });
+  }
+}
+
+function importBookmarks(nodes, links = []) {
+  nodes.forEach((node) => {
+    if (links.length >= 12) return;
+    if (node.url) links.push({ name: node.title || new URL(node.url).hostname, url: node.url, icon: '★' });
+    if (node.children) importBookmarks(node.children, links);
+  });
+  return links;
 }
 
 function getStoredState() {
@@ -101,6 +161,20 @@ function renderTasks() {
   document.querySelector('#task-count').textContent = state.tasks.filter((task) => !task.done).length;
 }
 
+function renderTaskHistory() {
+  const list = document.querySelector('#task-history-list');
+  list.innerHTML = '';
+  if (!state.taskHistory.length) {
+    list.textContent = 'No archived tasks yet.';
+    return;
+  }
+  state.taskHistory.forEach((day) => {
+    const section = document.createElement('section');
+    section.innerHTML = `<strong>${day.date}</strong><p>${day.tasks.map((task) => task.text).join(' · ')}</p>`;
+    list.append(section);
+  });
+}
+
 function renderTimer() {
   const minutes = Math.floor(state.timer.seconds / 60).toString().padStart(2, '0');
   const seconds = (state.timer.seconds % 60).toString().padStart(2, '0');
@@ -114,7 +188,7 @@ function runTimer() {
   if (!state.timer.running) return;
   window.daymarkTimer = setInterval(() => {
     if (state.timer.seconds > 0) state.timer.seconds -= 1;
-    else state.timer.running = false;
+    else { state.timer.running = false; notifyFocusComplete(); }
     renderTimer();
     saveState();
   }, 1000);
@@ -254,7 +328,7 @@ function openSettings(open) {
 document.querySelector('#search-form').addEventListener('submit', (event) => {
   event.preventDefault();
   const query = document.querySelector('#search-input').value.trim();
-  if (query) location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  if (query) location.href = searchUrl(query);
 });
 document.querySelector('#add-link-button').addEventListener('click', () => document.querySelector('#link-dialog').showModal());
 document.querySelector('#link-form').addEventListener('submit', (event) => {
@@ -272,6 +346,29 @@ document.querySelector('#close-settings').addEventListener('click', () => openSe
 document.querySelector('#scrim').addEventListener('click', () => openSettings(false));
 document.querySelector('#close-link-dialog').addEventListener('click', () => document.querySelector('#link-dialog').close());
 document.querySelector('#clock-toggle').addEventListener('change', (event) => { state.twentyFourHour = event.target.checked; saveState(); updateClock(); });
+document.querySelector('#search-engine').addEventListener('change', (event) => { state.searchEngine = event.target.value; saveState(); });
+document.querySelector('#custom-search-url').addEventListener('change', (event) => { state.customSearchUrl = event.target.value.trim(); saveState(); });
+document.querySelector('#daily-reset-toggle').addEventListener('change', (event) => { state.dailyReset = event.target.checked; saveState(); });
+document.querySelector('#task-history-button').addEventListener('click', () => { renderTaskHistory(); document.querySelector('#task-history-dialog').showModal(); });
+document.querySelector('#close-task-history-dialog').addEventListener('click', () => document.querySelector('#task-history-dialog').close());
+document.querySelector('#timer-notification-toggle').addEventListener('change', (event) => {
+  state.timerNotifications = event.target.checked;
+  if (state.timerNotifications && globalThis.Notification?.permission === 'default') Notification.requestPermission();
+  saveState();
+});
+document.querySelector('#quote-rotate-toggle').addEventListener('change', (event) => { state.quoteDaily = event.target.checked; renderQuote(); saveState(); });
+document.querySelector('#new-quote-button').addEventListener('click', refreshQuote);
+document.querySelector('#reduced-motion-toggle').addEventListener('change', (event) => { state.reducedMotion = event.target.checked; applyPreferences(); saveState(); });
+document.querySelector('#minimal-mode-toggle').addEventListener('change', (event) => { state.minimalMode = event.target.checked; applyPreferences(); saveState(); });
+document.querySelector('#import-bookmarks-button').addEventListener('click', () => {
+  if (!globalThis.chrome?.bookmarks) return;
+  chrome.bookmarks.getTree((tree) => {
+    const imported = importBookmarks(tree).filter((link) => !state.links.some((existing) => existing.url === link.url));
+    state.links.push(...imported);
+    saveState();
+    renderLinks();
+  });
+});
 document.querySelectorAll('.swatch').forEach((swatch) => swatch.addEventListener('click', () => { state.theme = swatch.dataset.theme; document.body.dataset.theme = state.theme === 'moss' ? '' : state.theme; saveState(); }));
 document.querySelector('#reset-button').addEventListener('click', () => { state.links = [...starterLinks]; saveState(); renderLinks(); });
 document.querySelector('#task-form').addEventListener('submit', (event) => {
@@ -327,6 +424,7 @@ document.querySelector('#import-input').addEventListener('change', (event) => {
       applyLayout();
       document.querySelector('#greeting-input').value = state.greeting || '';
       document.querySelector('#clock-toggle').checked = state.twentyFourHour;
+      applyPreferences();
       renderTasks();
       renderTimer();
       renderWeather();
@@ -339,9 +437,36 @@ document.querySelector('#import-input').addEventListener('change', (event) => {
   reader.readAsText(file);
 });
 document.addEventListener('keydown', (event) => {
-  if (event.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') { event.preventDefault(); document.querySelector('#search-input').focus(); }
-  if (event.key === 'Escape') { openSettings(false); if (document.querySelector('#link-dialog').open) document.querySelector('#link-dialog').close(); }
+  const editable = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); document.querySelector('#command-dialog').showModal(); }
+  if (event.key === '/' && !editable) { event.preventDefault(); document.querySelector('#search-input').focus(); }
+  if (!editable && /^[1-9]$/.test(event.key)) document.querySelectorAll('.link-card')[Number(event.key) - 1]?.click();
+  if (!editable && event.key.toLowerCase() === 'n') { event.preventDefault(); document.querySelector('#task-input').focus(); }
+  if (event.key === 'Escape') { openSettings(false); document.querySelectorAll('dialog[open]').forEach((dialog) => dialog.close()); }
 });
+document.querySelector('#close-command-dialog').addEventListener('click', () => document.querySelector('#command-dialog').close());
+document.querySelectorAll('[data-command]').forEach((button) => button.addEventListener('click', () => {
+  const command = button.dataset.command;
+  document.querySelector('#command-dialog').close();
+  if (command === 'search') document.querySelector('#search-input').focus();
+  if (command === 'task') document.querySelector('#task-input').focus();
+  if (command === 'settings') openSettings(true);
+  if (command === 'minimal') { state.minimalMode = !state.minimalMode; applyPreferences(); saveState(); }
+}));
+document.querySelector('#onboarding-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  state.greeting = document.querySelector('#onboarding-name').value.trim();
+  state.searchEngine = document.querySelector('#onboarding-search-engine').value;
+  state.onboardingComplete = true;
+  const city = document.querySelector('#onboarding-city').value.trim();
+  if (city) loadWeather(city);
+  document.querySelector('#onboarding-dialog').close();
+  document.querySelector('#greeting-input').value = state.greeting;
+  applyPreferences();
+  updateClock();
+  saveState();
+});
+document.querySelector('#skip-onboarding-button').addEventListener('click', () => { state.onboardingComplete = true; saveState(); document.querySelector('#onboarding-dialog').close(); });
 document.querySelectorAll('[data-visibility]').forEach((input) => input.addEventListener('change', (event) => {
   const hidden = new Set(state.layout.hidden || []);
   if (event.target.checked) hidden.delete(event.target.dataset.visibility);
@@ -361,11 +486,15 @@ getStoredState().then((stored) => {
   state.wallpaperScale = state.wallpaperScale || 100;
   state.wallpaperPosition = state.wallpaperPosition || 'center';
   state.layout = { locked: false, hidden: [], positions: {}, ...(state.layout || {}) };
+  state.taskHistory = Array.isArray(state.taskHistory) ? state.taskHistory : [];
+  state.searchEngine = state.searchEngine || 'google';
+  rollOverTasks();
   document.body.dataset.theme = state.theme === 'moss' ? '' : state.theme;
   applyWallpaper();
   applyLayout();
   document.querySelector('#greeting-input').value = state.greeting;
   document.querySelector('#clock-toggle').checked = state.twentyFourHour;
+  applyPreferences();
   document.querySelector('#notes-input').value = state.notes;
   renderTasks();
   renderTimer();
@@ -374,5 +503,6 @@ getStoredState().then((stored) => {
   renderQuote();
   renderLinks();
   updateClock();
+  if (!state.onboardingComplete) document.querySelector('#onboarding-dialog').showModal();
   setInterval(updateClock, 1000);
 });

@@ -119,6 +119,18 @@
         <span><strong>24-hour clock</strong><small>Use 13:30 instead of 1:30 PM</small></span>
         <input type="checkbox" id="clock-toggle" />
       </label>
+      <div class="setting-block">
+        <strong>Search</strong>
+        <label class="select-setting" for="search-engine">Search engine
+          <select id="search-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option><option value="kagi">Kagi</option><option value="custom">Custom</option></select>
+        </label>
+        <input class="text-input" id="custom-search-url" type="url" placeholder="https://example.com/search?q=%s" />
+      </div>
+      <div class="setting-block">
+        <strong>Daily tasks</strong>
+        <label class="setting-row compact-row"><span><strong>Start fresh each day</strong><small>Archive unfinished tasks overnight</small></span><input type="checkbox" id="daily-reset-toggle" /></label>
+        <button class="upload-button" id="task-history-button" type="button">View task history</button>
+      </div>
       <div class="setting-block wallpaper-settings">
         <strong>Wallpaper</strong>
         <small>Choose an image from your computer</small>
@@ -180,6 +192,27 @@
         <small>Used only for the weather widget</small>
         <input class="text-input" id="weather-city-input" maxlength="40" placeholder="e.g. London" />
       </div>
+      <div class="setting-block">
+        <strong>Focus</strong>
+        <label class="setting-row compact-row"><span><strong>Completion notification</strong><small>Let Daymark know when focus time ends</small></span><input type="checkbox" id="timer-notification-toggle" /></label>
+      </div>
+      <div class="setting-block">
+        <strong>Shortcuts</strong>
+        <small>Import the first twelve bookmarks from Chrome</small>
+        <button class="upload-button" id="import-bookmarks-button" type="button">Import bookmarks</button>
+      </div>
+      <div class="setting-block">
+        <strong>Quote</strong>
+        <div class="backup-actions"><button class="upload-button" id="new-quote-button" type="button">New quote</button><label class="setting-row compact-row quote-toggle"><span><strong>Rotate daily</strong></span><input type="checkbox" id="quote-rotate-toggle" /></label></div>
+      </div>
+      <div class="setting-block">
+        <strong>Accessibility</strong>
+        <label class="setting-row compact-row"><span><strong>Reduce motion</strong><small>Remove non-essential animations</small></span><input type="checkbox" id="reduced-motion-toggle" /></label>
+      </div>
+      <div class="setting-block">
+        <strong>View</strong>
+        <label class="setting-row compact-row"><span><strong>Minimal mode</strong><small>Keep only time, search, and shortcuts</small></span><input type="checkbox" id="minimal-mode-toggle" /></label>
+      </div>
       <div class="setting-block backup-settings">
         <strong>Backup</strong>
         <small>Move your Daymark setup to another browser</small>
@@ -189,6 +222,17 @@
       <button class="reset-button" id="reset-button" type="button">Restore starter links</button>
     </aside>
     <div class="scrim" id="scrim"></div>
+    <dialog id="command-dialog" class="dialog command-dialog" aria-labelledby="command-title">
+      <div class="dialog-heading"><div><p class="eyebrow">Quick actions</p><h2 id="command-title">Command palette</h2></div><button class="close-button" id="close-command-dialog" type="button" aria-label="Close command palette">×</button></div>
+      <div class="command-list"><button type="button" data-command="search">Search the web <kbd>/</kbd></button><button type="button" data-command="task">Add a task <kbd>N</kbd></button><button type="button" data-command="settings">Open settings <kbd>S</kbd></button><button type="button" data-command="minimal">Toggle minimal mode <kbd>M</kbd></button></div>
+    </dialog>
+    <dialog id="task-history-dialog" class="dialog" aria-labelledby="task-history-title">
+      <div class="dialog-heading"><div><p class="eyebrow">Past days</p><h2 id="task-history-title">Task history</h2></div><button class="close-button" id="close-task-history-dialog" type="button" aria-label="Close task history">×</button></div>
+      <div class="task-history-list" id="task-history-list"></div>
+    </dialog>
+    <dialog id="onboarding-dialog" class="dialog onboarding-dialog" aria-labelledby="onboarding-title">
+      <form method="dialog" id="onboarding-form"><div class="dialog-heading"><div><p class="eyebrow">Daymark V2</p><h2 id="onboarding-title">Make this yours</h2></div></div><label for="onboarding-name">Greeting</label><input id="onboarding-name" maxlength="60" placeholder="e.g. Welcome back, Alex." /><label for="onboarding-city">Weather city</label><input id="onboarding-city" maxlength="40" placeholder="e.g. London" /><label for="onboarding-search-engine">Search engine</label><select id="onboarding-search-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option></select><button class="primary-button" type="submit">Start my day</button><button class="reset-button" id="skip-onboarding-button" type="button">Skip for now</button></form>
+    </dialog>
     <script src="app.js"></script>
   </body>
 </html>
