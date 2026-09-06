@@ -17,7 +17,7 @@ const quotes = [
 ];
 
 function createDefaultState() {
-  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], taskHistory: [], tasksDate: '', notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', searchEngine: 'google', customSearchUrl: '', dailyReset: true, timerNotifications: true, quoteDaily: true, quoteIndex: 0, reducedMotion: false, minimalMode: false, onboardingComplete: false, weather: { city: '', temperature: null, description: '' }, timer: { seconds: 1500, running: false }, layout: { locked: false, hidden: [], positions: {} } };
+  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], taskHistory: [], tasksDate: '', notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', searchEngine: 'google', customSearchUrl: '', dailyReset: true, timerNotifications: true, quoteDaily: true, quoteIndex: 0, reducedMotion: false, minimalMode: false, onboardingComplete: false, weather: { city: '', temperature: null, description: '' }, timer: { seconds: 1500, durationMinutes: 25, running: false }, layout: { locked: false, hidden: [], positions: {} } };
 }
 
 const state = createDefaultState();
@@ -181,6 +181,8 @@ function renderTimer() {
   document.querySelector('#timer-display').textContent = `${minutes}:${seconds}`;
   document.querySelector('#timer-toggle').textContent = state.timer.running ? 'Pause' : 'Start';
   document.querySelector('#timer-status').textContent = state.timer.running ? 'In focus' : 'Ready';
+  document.querySelector('#timer-duration').value = state.timer.durationMinutes;
+  document.querySelector('#timer-duration').disabled = state.timer.running;
 }
 
 function runTimer() {
@@ -383,7 +385,14 @@ document.querySelector('#task-form').addEventListener('submit', (event) => {
 });
 document.querySelector('#notes-input').addEventListener('input', (event) => { state.notes = event.target.value; document.querySelector('#notes-status').textContent = 'Saved'; saveState(); });
 document.querySelector('#timer-toggle').addEventListener('click', () => { state.timer.running = !state.timer.running; renderTimer(); runTimer(); saveState(); });
-document.querySelector('#timer-reset').addEventListener('click', () => { state.timer = { seconds: 1500, running: false }; renderTimer(); runTimer(); saveState(); });
+document.querySelector('#timer-duration').addEventListener('change', (event) => {
+  const durationMinutes = Math.min(180, Math.max(1, Number(event.target.value) || 25));
+  state.timer = { seconds: durationMinutes * 60, durationMinutes, running: false };
+  renderTimer();
+  runTimer();
+  saveState();
+});
+document.querySelector('#timer-reset').addEventListener('click', () => { state.timer = { seconds: state.timer.durationMinutes * 60, durationMinutes: state.timer.durationMinutes, running: false }; renderTimer(); runTimer(); saveState(); });
 document.querySelector('#weather-form').addEventListener('submit', (event) => { event.preventDefault(); loadWeather(document.querySelector('#weather-input').value.trim()); });
 document.querySelector('#weather-city-input').addEventListener('change', (event) => loadWeather(event.target.value.trim()));
 document.querySelectorAll('[data-wallpaper-preset]').forEach((button) => button.addEventListener('click', () => { state.wallpaper = ''; state.wallpaperPreset = button.dataset.wallpaperPreset; saveState(); applyWallpaper(); }));
@@ -481,7 +490,7 @@ getStoredState().then((stored) => {
   state.tasks = Array.isArray(state.tasks) ? state.tasks : [];
   state.notes = state.notes || '';
   state.weather = { city: '', temperature: null, description: '', ...(state.weather || {}) };
-  state.timer = { seconds: 1500, running: false, ...(state.timer || {}) };
+  state.timer = { seconds: 1500, durationMinutes: 25, running: false, ...(state.timer || {}) };
   state.wallpaperPreset = state.wallpaperPreset || 'blue';
   state.wallpaperScale = state.wallpaperScale || 100;
   state.wallpaperPosition = state.wallpaperPosition || 'center';

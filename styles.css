@@ -84,6 +84,9 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .timer-card, .weather-card { text-align: center; }
 .timer-card .widget-heading, .weather-card .widget-heading { text-align: left; }
 .timer-display { margin: 15px 0 14px; color: var(--ink); font-size: 31px; letter-spacing: -.06em; }
+.timer-duration { display: flex; align-items: center; justify-content: center; gap: 8px; margin: -5px 0 14px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 10px; }
+.timer-duration input { width: 48px; padding: 5px 4px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: rgba(0,0,0,.14); font: inherit; text-align: center; }
+.timer-duration input:disabled { opacity: .55; cursor: not-allowed; }
 .timer-actions { display: flex; justify-content: center; gap: 7px; }
 .timer-actions button { padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.08); font-size: 10px; }
 .timer-actions button:first-child { color: var(--accent-ink); background: var(--accent); }
