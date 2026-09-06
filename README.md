@@ -14,7 +14,14 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 - Daily task list with completion tracking
 - Persistent notes area
 - 25-minute focus timer with start, pause, and reset controls
+- Focus completion notifications
 - Weather lookup by city using Open-Meteo
+- Google, DuckDuckGo, Bing, Kagi, and custom search engines
+- Keyboard shortcuts for search, tasks, shortcuts, and a command palette
+- Optional daily task rollover with a browsable 30-day task history
+- Optional Chrome bookmark import
+- Quote refresh and daily rotation controls
+- First-run setup, minimal mode, and reduced-motion support
 - Theme options, wallpaper presets, and custom image wallpapers
 - Wallpaper blur, scale, and position controls
 - Customizable widget visibility and drag-and-drop layout
@@ -32,6 +39,8 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 6. Open a new tab to see Daymark.
 
 To apply changes while developing, return to `chrome://extensions` and select the extension's reload button.
+
+Daymark requests Chrome's `bookmarks` permission only to import shortcuts and `notifications` permission only to notify you when a focus session ends. Neither feature sends data away from your browser.
 
 ## Usage
 
