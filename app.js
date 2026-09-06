@@ -17,7 +17,7 @@ const quotes = [
 ];
 
 function createDefaultState() {
-  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], taskHistory: [], tasksDate: '', notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', searchEngine: 'google', customSearchUrl: '', dailyReset: true, timerNotifications: true, quoteDaily: true, quoteIndex: 0, reducedMotion: false, minimalMode: false, onboardingComplete: false, weather: { city: '', temperature: null, description: '' }, timer: { seconds: 1500, durationMinutes: 25, running: false }, layout: { locked: false, hidden: [], positions: {} } };
+  return { links: starterLinks.map((link) => ({ ...link })), tasks: [], taskHistory: [], tasksDate: '', notes: '', twentyFourHour: false, theme: 'night', wallpaper: '', wallpaperCollection: [], wallpaperRotate: false, wallpaperPreset: 'blue', wallpaperBlur: 0, wallpaperScale: 100, wallpaperPosition: 'center', greeting: '', searchEngine: 'google', customSearchUrl: '', dailyReset: true, timerNotifications: true, quoteDaily: true, quoteIndex: 0, reducedMotion: false, minimalMode: false, onboardingComplete: false, weather: { city: '', temperature: null, description: '', updatedAt: '' }, timer: { seconds: 1500, durationMinutes: 25, running: false }, layout: { locked: false, hidden: [], positions: {} } };
 }
 
 const state = createDefaultState();
@@ -26,6 +26,8 @@ const clock = document.querySelector('#clock-text');
 const dateLabel = document.querySelector('#date-text');
 const greeting = document.querySelector('#greeting-text');
 const quote = document.querySelector('#quote');
+const appVersion = '2.1.0';
+let editingLinkIndex = null;
 
 function todayKey() {
   return new Date().toLocaleDateString('en-CA');
@@ -68,6 +70,7 @@ function applyPreferences() {
   document.querySelector('#quote-rotate-toggle').checked = state.quoteDaily;
   document.querySelector('#reduced-motion-toggle').checked = state.reducedMotion;
   document.querySelector('#minimal-mode-toggle').checked = state.minimalMode;
+  document.querySelector('#wallpaper-rotate-toggle').checked = state.wallpaperRotate;
 }
 
 function rollOverTasks() {
@@ -123,9 +126,12 @@ function applyWallpaper() {
     dusk: 'linear-gradient(145deg, rgba(62, 28, 103, .78), transparent 45%), radial-gradient(ellipse at 72% 15%, rgba(239, 133, 188, .28), transparent 27%), radial-gradient(ellipse at 20% 90%, rgba(20, 31, 91, .8), transparent 36%)',
     sea: 'linear-gradient(145deg, rgba(12, 82, 107, .8), transparent 45%), radial-gradient(ellipse at 78% 12%, rgba(107, 222, 205, .25), transparent 27%), radial-gradient(ellipse at 20% 88%, rgba(8, 43, 91, .82), transparent 36%)'
   };
-  backdrop.style.backgroundImage = state.wallpaper ? `linear-gradient(rgba(11, 35, 74, .28), rgba(5, 15, 42, .5)), url("${state.wallpaper}")` : presets[state.wallpaperPreset] || presets.blue;
+  const wallpapers = state.wallpaperCollection || [];
+  const dayIndex = [...todayKey()].reduce((total, character) => total + character.charCodeAt(0), 0);
+  const wallpaper = state.wallpaperRotate && wallpapers.length ? wallpapers[dayIndex % wallpapers.length] : state.wallpaper;
+  backdrop.style.backgroundImage = wallpaper ? `linear-gradient(rgba(11, 35, 74, .28), rgba(5, 15, 42, .5)), url("${wallpaper}")` : presets[state.wallpaperPreset] || presets.blue;
   backdrop.style.backgroundPosition = state.wallpaperPosition || 'center';
-  backdrop.style.backgroundSize = state.wallpaper ? `${state.wallpaperScale || 100}%` : 'cover';
+  backdrop.style.backgroundSize = wallpaper ? `${state.wallpaperScale || 100}%` : 'cover';
   backdrop.style.filter = `blur(${state.wallpaperBlur}px)`;
   document.querySelector('#wallpaper-blur').value = state.wallpaperBlur;
   document.querySelector('#wallpaper-blur-value').textContent = `${state.wallpaperBlur}px`;
@@ -149,10 +155,11 @@ function applyLayout() {
 function renderTasks() {
   const list = document.querySelector('#task-list');
   list.innerHTML = '';
-  state.tasks.forEach((task, index) => {
+  const priorityOrder = { high: 0, normal: 1, low: 2 };
+  state.tasks.map((task, index) => ({ task, index })).sort((left, right) => priorityOrder[left.task.priority || 'normal'] - priorityOrder[right.task.priority || 'normal']).forEach(({ task, index }) => {
     const item = document.createElement('li');
     item.className = task.done ? 'completed' : '';
-    item.innerHTML = `<label><input type="checkbox" ${task.done ? 'checked' : ''} /><span></span></label><button type="button" aria-label="Remove task">×</button>`;
+    item.innerHTML = `<label><input type="checkbox" ${task.done ? 'checked' : ''} /><span></span></label><span class="task-priority priority-${task.priority || 'normal'}">${task.priority || 'normal'}</span><button type="button" aria-label="Remove task">×</button>`;
     item.querySelector('span').textContent = task.text;
     item.querySelector('input').addEventListener('change', (event) => { state.tasks[index].done = event.target.checked; saveState(); renderTasks(); });
     item.querySelector('button').addEventListener('click', () => { state.tasks.splice(index, 1); saveState(); renderTasks(); });
@@ -206,8 +213,9 @@ function weatherDescription(code) {
 
 function renderWeather() {
   const weather = state.weather || {};
-  document.querySelector('#weather-location').textContent = weather.city || 'Set a city';
   document.querySelector('#weather-reading').textContent = weather.temperature === null ? '--°' : `${Math.round(weather.temperature)}°`;
+  const updated = weather.updatedAt ? ` · ${new Date(weather.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : '';
+  document.querySelector('#weather-detail').textContent = weather.city ? `${weather.city} · ${weather.description || 'Current conditions'}${updated}` : 'Set a city to begin';
   document.querySelector('#weather-input').value = weather.city || '';
   document.querySelector('#weather-city-input').value = weather.city || '';
 }
@@ -222,11 +230,11 @@ async function loadWeather(city) {
     if (!place) throw new Error('City not found');
     const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,weather_code&temperature_unit=celsius`);
     const weatherData = await weatherResponse.json();
-    state.weather = { city: place.name, temperature: weatherData.current.temperature_2m, description: weatherDescription(weatherData.current.weather_code) };
+    state.weather = { city: place.name, temperature: weatherData.current.temperature_2m, description: weatherDescription(weatherData.current.weather_code), updatedAt: new Date().toISOString() };
     saveState();
     renderWeather();
   } catch {
-    document.querySelector('#weather-location').textContent = 'Unavailable offline';
+    document.querySelector('#weather-detail').textContent = 'Unavailable offline';
   }
 }
 
@@ -280,6 +288,7 @@ function restoreDefaults() {
   document.querySelector('#greeting-input').value = '';
   document.querySelector('#notes-input').value = '';
   document.querySelector('#clock-toggle').checked = false;
+  applyPreferences();
   setCustomizeMode(false);
   applyWallpaper();
   applyLayout();
@@ -292,6 +301,33 @@ function restoreDefaults() {
   saveState();
 }
 
+function applyLayoutPreset(preset) {
+  const hiddenByPreset = {
+    balanced: [],
+    focus: ['links', 'todo', 'notes', 'weather', 'quote'],
+    minimal: ['topbar', 'date', 'greeting', 'prompt', 'widgets', 'quote']
+  };
+  state.layout = { locked: false, hidden: hiddenByPreset[preset], positions: {} };
+  state.minimalMode = preset === 'minimal';
+  applyPreferences();
+  applyLayout();
+  saveState();
+}
+
+function openLinkDialog(index = null) {
+  editingLinkIndex = index;
+  const editing = index !== null;
+  document.querySelector('#link-dialog-eyebrow').textContent = editing ? 'Edit shortcut' : 'New shortcut';
+  document.querySelector('#link-dialog-title').textContent = editing ? 'Edit a place' : 'Add a place';
+  if (editing) {
+    const link = state.links[index];
+    document.querySelector('#link-name').value = link.name;
+    document.querySelector('#link-url').value = link.url;
+    document.querySelector('#link-icon').value = link.icon;
+  }
+  document.querySelector('#link-dialog').showModal();
+}
+
 function renderLinks() {
   linkGrid.innerHTML = '';
   state.links.forEach((link, index) => {
@@ -301,7 +337,12 @@ function renderLinks() {
     card.target = '_blank';
     card.rel = 'noopener noreferrer';
     const host = new URL(link.url).hostname.replace('www.', '');
-    card.innerHTML = `<span class="link-icon" aria-hidden="true">${link.icon || link.name.slice(0, 1)}</span><span class="link-copy"><span class="link-name">${link.name}</span><span class="link-host">${host}</span></span><button class="delete-link" type="button" aria-label="Remove ${link.name}">×</button>`;
+    card.innerHTML = `<span class="link-icon" aria-hidden="true">${link.icon || link.name.slice(0, 1)}</span><span class="link-copy"><span class="link-name">${link.name}</span><span class="link-host">${host}</span></span><button class="edit-link" type="button" aria-label="Edit ${link.name}">Edit</button><button class="delete-link" type="button" aria-label="Remove ${link.name}">×</button>`;
+    card.querySelector('.edit-link').addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openLinkDialog(index);
+    });
     card.querySelector('.delete-link').addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -332,21 +373,25 @@ document.querySelector('#search-form').addEventListener('submit', (event) => {
   const query = document.querySelector('#search-input').value.trim();
   if (query) location.href = searchUrl(query);
 });
-document.querySelector('#add-link-button').addEventListener('click', () => document.querySelector('#link-dialog').showModal());
+document.querySelector('#add-link-button').addEventListener('click', () => openLinkDialog());
 document.querySelector('#link-form').addEventListener('submit', (event) => {
   if (event.submitter?.value === 'cancel') return;
   event.preventDefault();
   const url = document.querySelector('#link-url').value.trim();
-  state.links.push({ name: document.querySelector('#link-name').value.trim(), url: normalizeUrl(url), icon: document.querySelector('#link-icon').value });
+  const link = { name: document.querySelector('#link-name').value.trim(), url: normalizeUrl(url), icon: document.querySelector('#link-icon').value };
+  if (editingLinkIndex === null) state.links.push(link);
+  else state.links[editingLinkIndex] = link;
   saveState();
   renderLinks();
   document.querySelector('#link-dialog').close();
   event.target.reset();
+  editingLinkIndex = null;
 });
 document.querySelector('#settings-button').addEventListener('click', () => openSettings(true));
 document.querySelector('#close-settings').addEventListener('click', () => openSettings(false));
 document.querySelector('#scrim').addEventListener('click', () => openSettings(false));
 document.querySelector('#close-link-dialog').addEventListener('click', () => document.querySelector('#link-dialog').close());
+document.querySelector('#link-dialog').addEventListener('close', () => { editingLinkIndex = null; });
 document.querySelector('#clock-toggle').addEventListener('change', (event) => { state.twentyFourHour = event.target.checked; saveState(); updateClock(); });
 document.querySelector('#search-engine').addEventListener('change', (event) => { state.searchEngine = event.target.value; saveState(); });
 document.querySelector('#custom-search-url').addEventListener('change', (event) => { state.customSearchUrl = event.target.value.trim(); saveState(); });
@@ -372,13 +417,14 @@ document.querySelector('#import-bookmarks-button').addEventListener('click', () 
   });
 });
 document.querySelectorAll('.swatch').forEach((swatch) => swatch.addEventListener('click', () => { state.theme = swatch.dataset.theme; document.body.dataset.theme = state.theme === 'moss' ? '' : state.theme; saveState(); }));
+document.querySelectorAll('[data-layout-preset]').forEach((button) => button.addEventListener('click', () => applyLayoutPreset(button.dataset.layoutPreset)));
 document.querySelector('#reset-button').addEventListener('click', () => { state.links = [...starterLinks]; saveState(); renderLinks(); });
 document.querySelector('#task-form').addEventListener('submit', (event) => {
   event.preventDefault();
   const input = document.querySelector('#task-input');
   const text = input.value.trim();
   if (!text) return;
-  state.tasks.push({ text, done: false });
+  state.tasks.push({ text, priority: document.querySelector('#task-priority').value, done: false });
   input.value = '';
   saveState();
   renderTasks();
@@ -392,18 +438,27 @@ document.querySelector('#timer-duration').addEventListener('change', (event) => 
   runTimer();
   saveState();
 });
+document.querySelectorAll('[data-timer-preset]').forEach((button) => button.addEventListener('click', () => {
+  const durationMinutes = Number(button.dataset.timerPreset);
+  state.timer = { seconds: durationMinutes * 60, durationMinutes, running: false };
+  renderTimer();
+  runTimer();
+  saveState();
+}));
 document.querySelector('#timer-reset').addEventListener('click', () => { state.timer = { seconds: state.timer.durationMinutes * 60, durationMinutes: state.timer.durationMinutes, running: false }; renderTimer(); runTimer(); saveState(); });
 document.querySelector('#weather-form').addEventListener('submit', (event) => { event.preventDefault(); loadWeather(document.querySelector('#weather-input').value.trim()); });
+document.querySelector('#weather-refresh').addEventListener('click', () => loadWeather(state.weather.city));
 document.querySelector('#weather-city-input').addEventListener('change', (event) => loadWeather(event.target.value.trim()));
 document.querySelectorAll('[data-wallpaper-preset]').forEach((button) => button.addEventListener('click', () => { state.wallpaper = ''; state.wallpaperPreset = button.dataset.wallpaperPreset; saveState(); applyWallpaper(); }));
 document.querySelector('#wallpaper-input').addEventListener('change', (event) => {
   const [file] = event.target.files;
   if (!file || !file.type.startsWith('image/')) return;
   const reader = new FileReader();
-  reader.addEventListener('load', () => { state.wallpaper = reader.result; saveState(); applyWallpaper(); });
+  reader.addEventListener('load', () => { state.wallpaper = reader.result; state.wallpaperCollection = [...state.wallpaperCollection, reader.result].slice(-5); saveState(); applyWallpaper(); });
   reader.readAsDataURL(file);
 });
 document.querySelector('#wallpaper-reset').addEventListener('click', () => { state.wallpaper = ''; saveState(); applyWallpaper(); document.querySelector('#wallpaper-input').value = ''; });
+document.querySelector('#wallpaper-rotate-toggle').addEventListener('change', (event) => { state.wallpaperRotate = event.target.checked; saveState(); applyWallpaper(); });
 document.querySelector('#wallpaper-blur').addEventListener('input', (event) => { state.wallpaperBlur = Number(event.target.value); saveState(); applyWallpaper(); });
 document.querySelector('#wallpaper-scale').addEventListener('input', (event) => { state.wallpaperScale = Number(event.target.value); saveState(); applyWallpaper(); });
 document.querySelector('#wallpaper-position').addEventListener('change', (event) => { state.wallpaperPosition = event.target.value; saveState(); applyWallpaper(); });
@@ -412,8 +467,23 @@ document.querySelector('#greeting-reset').addEventListener('click', () => { stat
 document.querySelector('#layout-edit-button').addEventListener('click', () => setCustomizeMode(!document.body.classList.contains('customizing')));
 document.querySelector('#layout-lock-toggle').addEventListener('change', (event) => { state.layout.locked = event.target.checked; saveState(); setCustomizeMode(document.body.classList.contains('customizing')); });
 document.querySelector('#defaults-button').addEventListener('click', () => restoreDefaults());
+document.querySelector('#clear-notes-button').addEventListener('click', () => {
+  if (!confirm('Clear all notes? This cannot be undone.')) return;
+  state.notes = '';
+  document.querySelector('#notes-input').value = '';
+  saveState();
+});
+document.querySelector('#clear-completed-button').addEventListener('click', () => {
+  state.tasks = state.tasks.filter((task) => !task.done);
+  renderTasks();
+  saveState();
+});
+document.querySelector('#clear-data-button').addEventListener('click', () => {
+  if (confirm('Clear all Daymark data and restore defaults? This cannot be undone.')) restoreDefaults();
+});
 document.querySelector('#export-button').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const backup = { schemaVersion: 2, exportedAt: new Date().toISOString(), daymarkVersion: appVersion, state };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = 'daymark-settings.json';
@@ -426,7 +496,10 @@ document.querySelector('#import-input').addEventListener('change', (event) => {
   const reader = new FileReader();
   reader.addEventListener('load', () => {
     try {
-      Object.assign(state, JSON.parse(reader.result));
+      const backup = JSON.parse(reader.result);
+      const importedState = backup.state || backup;
+      if (!importedState || typeof importedState !== 'object' || !Array.isArray(importedState.links)) throw new Error('Invalid Daymark backup');
+      Object.assign(state, importedState);
       state.layout = { locked: false, hidden: [], positions: {}, ...(state.layout || {}) };
       document.body.dataset.theme = state.theme === 'moss' ? '' : state.theme;
       applyWallpaper();
@@ -492,6 +565,8 @@ getStoredState().then((stored) => {
   state.weather = { city: '', temperature: null, description: '', ...(state.weather || {}) };
   state.timer = { seconds: 1500, durationMinutes: 25, running: false, ...(state.timer || {}) };
   state.wallpaperPreset = state.wallpaperPreset || 'blue';
+  state.wallpaperCollection = Array.isArray(state.wallpaperCollection) ? state.wallpaperCollection : (state.wallpaper ? [state.wallpaper] : []);
+  state.wallpaperRotate = Boolean(state.wallpaperRotate);
   state.wallpaperScale = state.wallpaperScale || 100;
   state.wallpaperPosition = state.wallpaperPosition || 'center';
   state.layout = { locked: false, hidden: [], positions: {}, ...(state.layout || {}) };

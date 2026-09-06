@@ -1,12 +1,24 @@
 {
   "manifest_version": 3,
   "name": "Daymark",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A calm, personal dashboard for your next tab.",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "permissions": ["storage", "bookmarks", "notifications"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "open-daymark": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Open Daymark"
+    }
+  },
   "host_permissions": ["https://geocoding-api.open-meteo.com/*", "https://api.open-meteo.com/*"],
   "icons": {
     "16": "icon.svg",

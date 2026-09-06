@@ -10,23 +10,23 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 - Live date, time, and automatic or custom greetings
 - Web search from the new-tab page
 - Starter shortcuts for Gmail, Calendar, Notes, and GitHub
-- Add, remove, and restore custom shortcuts
-- Daily task list with completion tracking
+- Add, edit, remove, restore, and import custom shortcuts
+- Daily task list with completion tracking and high, normal, or low priority
 - Persistent notes area
-- 25-minute focus timer with start, pause, and reset controls
+- Focus timer with custom durations and 5, 15, 25, 45, and 60-minute presets
 - Focus completion notifications
-- Weather lookup by city using Open-Meteo
+- Weather lookup with conditions, last-updated time, and manual refresh
 - Google, DuckDuckGo, Bing, Kagi, and custom search engines
 - Keyboard shortcuts for search, tasks, shortcuts, and a command palette
 - Optional daily task rollover with a browsable 30-day task history
 - Optional Chrome bookmark import
 - Quote refresh and daily rotation controls
 - First-run setup, minimal mode, and reduced-motion support
-- Theme options, wallpaper presets, and custom image wallpapers
+- Theme options, wallpaper presets, and up to five rotating custom wallpapers
 - Wallpaper blur, scale, and position controls
-- Customizable widget visibility and drag-and-drop layout
+- Customizable widget visibility, layout presets, and drag-and-drop layout
 - 12-hour or 24-hour clock display
-- Export and import settings as JSON
+- Versioned export and validated import settings backups
 - Persistent state through Chrome storage, with local-storage fallback when opened directly
 
 ## Install In Chrome
@@ -40,7 +40,7 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 
 To apply changes while developing, return to `chrome://extensions` and select the extension's reload button.
 
-Daymark requests Chrome's `bookmarks` permission only to import shortcuts and `notifications` permission only to notify you when a focus session ends. Neither feature sends data away from your browser.
+Daymark requests Chrome's `bookmarks` permission only to import shortcuts and `notifications` permission only to notify you when a focus session ends. Neither feature sends data away from your browser. Press `Ctrl+Shift+Y` (or `Command+Shift+Y` on macOS) to open Daymark from anywhere in Chrome; customize the shortcut at `chrome://extensions/shortcuts`.
 
 ## Usage
 
@@ -49,7 +49,8 @@ Daymark requests Chrome's `bookmarks` permission only to import shortcuts and `n
 - Add tasks in **Today**, write in **Notes**, or start the **Focus** timer.
 - Open the settings button to change the theme, wallpaper, greeting, clock format, weather city, and visible widgets.
 - Choose **Edit layout** in settings to move widgets. Enable **Lock position** when the layout is set.
-- Use **Export settings** to save a backup, or **Import settings** to restore one.
+- Use **Export settings** to save a backup, or **Import settings** to restore one. Backups include a schema version, export time, and Daymark version.
+- Use Settings to clear notes, completed tasks, or all local Daymark data.
 
 ## Weather
 
@@ -60,6 +61,9 @@ Weather data is loaded from the free [Open-Meteo API](https://open-meteo.com/). 
 ```text
 .
 ├── app.js         # Dashboard behavior, state, storage, and integrations
+├── background.js   # Chrome command handler
+├── CHANGELOG.md    # Release history
+├── CONTRIBUTING.md # Contribution guidance
 ├── icon.svg       # Extension icon assets
 ├── index.html     # New-tab page markup
 ├── manifest.json  # Chrome Manifest V3 configuration

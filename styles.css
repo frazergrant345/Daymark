@@ -61,7 +61,8 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .link-name { display: block; overflow: hidden; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .link-host { display: block; overflow: hidden; margin-top: 3px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .delete-link { position: absolute; top: 5px; right: 7px; border: 0; color: var(--muted); background: transparent; opacity: 0; }
-.link-card:hover .delete-link, .delete-link:focus { opacity: 1; }
+.edit-link { position: absolute; right: 23px; bottom: 5px; border: 0; color: var(--muted); background: transparent; opacity: 0; font: 9px 'Courier New', monospace; }
+.link-card:hover .delete-link, .delete-link:focus, .link-card:hover .edit-link, .edit-link:focus { opacity: 1; }
 .widgets-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 30px; animation: rise .7s .18s ease both; }
 .widget-card { position: relative; min-height: 180px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.085); backdrop-filter: blur(13px); }
 .widget-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 15px; }
@@ -70,6 +71,7 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .inline-form { display: flex; gap: 7px; }
 .inline-form input, .inline-form button { border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(0,0,0,.14); font: inherit; font-size: 11px; }
 .inline-form input { min-width: 0; width: 100%; padding: 9px 10px; outline: 0; }
+.inline-form select { width: 62px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: rgba(0,0,0,.14); font: 10px 'Courier New', monospace; }
 .inline-form input:focus { border-color: var(--accent); }
 .inline-form button { width: 32px; color: var(--accent); cursor: pointer; }
 .task-list { display: grid; gap: 8px; max-height: 100px; margin: 14px 0 0; padding: 0; overflow-y: auto; list-style: none; }
@@ -79,6 +81,9 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .task-list input { accent-color: var(--accent); }
 .task-list li.completed span { color: var(--muted); text-decoration: line-through; }
 .task-list li button { border: 0; color: var(--muted); background: transparent; cursor: pointer; }
+.task-priority { color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; text-transform: uppercase; }
+.priority-high { color: #ffc0ad; }
+.priority-low { opacity: .65; }
 #notes-input { width: 100%; min-height: 104px; resize: vertical; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; font-size: 12px; line-height: 1.6; }
 #notes-input::placeholder { color: var(--muted); }
 .timer-card, .weather-card { text-align: center; }
@@ -87,10 +92,16 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .timer-duration { display: flex; align-items: center; justify-content: center; gap: 8px; margin: -5px 0 14px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 10px; }
 .timer-duration input { width: 48px; padding: 5px 4px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: rgba(0,0,0,.14); font: inherit; text-align: center; }
 .timer-duration input:disabled { opacity: .55; cursor: not-allowed; }
+.timer-presets { display: flex; justify-content: center; gap: 5px; margin: -7px 0 14px; }
+.timer-presets button { min-width: 28px; padding: 4px 5px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); background: rgba(255,255,255,.05); font: 10px 'Courier New', monospace; }
+.timer-presets button:hover { border-color: var(--accent); color: var(--accent); }
 .timer-actions { display: flex; justify-content: center; gap: 7px; }
 .timer-actions button { padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.08); font-size: 10px; }
 .timer-actions button:first-child { color: var(--accent-ink); background: var(--accent); }
 .weather-reading { margin: 8px 0 13px; color: var(--ink); font-size: 32px; letter-spacing: -.06em; }
+.weather-detail { min-height: 15px; margin: -7px 0 13px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; }
+.icon-text-button { border: 0; color: var(--accent); background: transparent; font: 10px 'Courier New', monospace; }
+.icon-text-button:hover { text-decoration: underline; }
 .weather-card .inline-form { margin-top: auto; }
 .footer { margin-top: auto; padding-top: 65px; gap: 30px; color: var(--muted); }
 .quote-wrap { display: flex; align-items: flex-start; gap: 10px; max-width: 550px; }
@@ -133,6 +144,9 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .text-input { width: 100%; margin-top: 14px; padding: 10px 11px; border: 1px solid var(--line); border-radius: 9px; outline: 0; color: var(--ink); background: rgba(0,0,0,.16); font: inherit; font-size: 11px; }
 .text-input:focus { border-color: var(--accent); }
 .layout-heading { display: flex; align-items: center; justify-content: space-between; }
+.layout-presets { display: flex; gap: 6px; margin-top: 14px; }
+.layout-presets button { flex: 1; padding: 7px 4px; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); background: rgba(255,255,255,.05); font-size: 10px; }
+.layout-presets button:hover { border-color: var(--accent); color: var(--accent); }
 .layout-edit-button { padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--accent); background: rgba(255,255,255,.07); font-size: 10px; }
 .layout-edit-button:hover { background: rgba(255,255,255,.15); }
 .compact-row { margin-top: 14px; padding: 14px 0 0; border-top: 1px solid var(--line); }
