@@ -80,14 +80,11 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .task-list input { accent-color: var(--accent); }
 .task-list li.completed span { color: var(--muted); text-decoration: line-through; }
 .task-list li button { border: 0; color: var(--muted); background: transparent; cursor: pointer; }
-<<<<<<< Updated upstream
-=======
 .task-list li .move-task-up { margin-left: auto; }
 .task-priority { color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; text-transform: uppercase; }
 .priority-high { color: #ffc0ad; }
 .priority-low { opacity: .65; }
 .task-repeat { color: var(--accent); font-family: 'Courier New', monospace; font-size: 9px; }
->>>>>>> Stashed changes
 #notes-input { width: 100%; min-height: 104px; resize: vertical; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; font-size: 12px; line-height: 1.6; }
 #notes-input::placeholder { color: var(--muted); }
 .timer-card, .weather-card { text-align: center; }
@@ -96,19 +93,19 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .timer-duration { display: flex; align-items: center; justify-content: center; gap: 8px; margin: -5px 0 14px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 10px; }
 .timer-duration input { width: 48px; padding: 5px 4px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: rgba(0,0,0,.14); font: inherit; text-align: center; }
 .timer-duration input:disabled { opacity: .55; cursor: not-allowed; }
+.timer-presets { display: flex; justify-content: center; gap: 5px; margin: -7px 0 14px; }
+.timer-presets button { min-width: 28px; padding: 4px 5px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); background: rgba(255,255,255,.05); font: 10px 'Courier New', monospace; }
+.timer-presets button:hover { border-color: var(--accent); color: var(--accent); }
 .timer-actions { display: flex; justify-content: center; gap: 7px; }
 .timer-actions button { padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.08); font-size: 10px; }
 .timer-actions button:first-child { color: var(--accent-ink); background: var(--accent); }
 .weather-reading { margin: 8px 0 13px; color: var(--ink); font-size: 32px; letter-spacing: -.06em; }
-<<<<<<< Updated upstream
-=======
 .weather-detail { min-height: 15px; margin: -7px 0 13px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; }
 .weather-forecast { display: flex; justify-content: center; gap: 8px; margin-bottom: 13px; }
 .weather-forecast span { display: grid; gap: 3px; color: var(--muted); font: 9px 'Courier New', monospace; }
 .weather-forecast strong { color: var(--accent); font-weight: 400; }
 .icon-text-button { border: 0; color: var(--accent); background: transparent; font: 10px 'Courier New', monospace; }
 .icon-text-button:hover { text-decoration: underline; }
->>>>>>> Stashed changes
 .weather-card .inline-form { margin-top: auto; }
 .footer { margin-top: auto; padding-top: 65px; gap: 30px; color: var(--muted); }
 .quote-wrap { display: flex; align-items: flex-start; gap: 10px; max-width: 550px; }

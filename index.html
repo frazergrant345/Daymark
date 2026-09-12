@@ -45,11 +45,7 @@
         <article class="widget-card" data-widget="todo">
           <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag to-do widget">⠿</button>
           <div class="widget-heading"><h2>Today</h2><span class="widget-count" id="task-count">0</span></div>
-<<<<<<< Updated upstream
-          <form class="inline-form" id="task-form"><input id="task-input" maxlength="80" placeholder="Add a task" aria-label="Add a task" /><button type="submit" aria-label="Add task">+</button></form>
-=======
           <form class="inline-form" id="task-form"><input id="task-input" maxlength="80" placeholder="Add a task" aria-label="Add a task" /><select id="task-priority" aria-label="Task priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select><select id="task-repeat" aria-label="Task repeat"><option value="none">Once</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select><button type="submit" aria-label="Add task">+</button></form>
->>>>>>> Stashed changes
           <ul class="task-list" id="task-list"></ul>
         </article>
         <article class="widget-card" data-widget="notes">
@@ -62,17 +58,15 @@
           <div class="widget-heading"><h2>Focus</h2><span class="save-status" id="timer-status">Ready</span></div>
           <div class="timer-display" id="timer-display">25:00</div>
           <label class="timer-duration" for="timer-duration"><span>Minutes</span><input id="timer-duration" type="number" min="1" max="180" value="25" inputmode="numeric" /></label>
+          <div class="timer-presets" aria-label="Focus duration presets"><button type="button" data-timer-preset="5">5</button><button type="button" data-timer-preset="15">15</button><button type="button" data-timer-preset="25">25</button><button type="button" data-timer-preset="45">45</button><button type="button" data-timer-preset="60">60</button></div>
           <div class="timer-actions"><button type="button" id="timer-toggle">Start</button><button type="button" id="timer-reset">Reset</button></div>
         </article>
         <article class="widget-card weather-card" data-widget="weather">
           <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag weather widget">⠿</button>
-          <div class="widget-heading"><h2>Weather</h2><span class="save-status" id="weather-location">Set a city</span></div>
+          <div class="widget-heading"><h2>Weather</h2><button class="icon-text-button" id="weather-refresh" type="button" title="Refresh weather">Refresh</button></div>
           <div class="weather-reading" id="weather-reading">--°</div>
-<<<<<<< Updated upstream
-=======
           <p class="weather-detail" id="weather-detail">Set a city to begin</p>
           <div class="weather-forecast" id="weather-forecast"></div>
->>>>>>> Stashed changes
           <form class="inline-form" id="weather-form"><input id="weather-input" maxlength="40" placeholder="City" aria-label="Weather city" /><button type="submit" aria-label="Set city">↗</button></form>
         </article>
       </section>
@@ -94,8 +88,8 @@
       <form method="dialog" id="link-form">
         <div class="dialog-heading">
           <div>
-            <p class="eyebrow">New shortcut</p>
-            <h2>Add a place</h2>
+            <p class="eyebrow" id="link-dialog-eyebrow">New shortcut</p>
+            <h2 id="link-dialog-title">Add a place</h2>
           </div>
           <button class="close-button" id="close-link-dialog" value="cancel" formnovalidate="true" type="button" aria-label="Close dialog">×</button>
         </div>
@@ -168,6 +162,7 @@
       </div>
       <div class="setting-block layout-settings">
         <div class="layout-heading"><strong>Layout</strong><button class="layout-edit-button" id="layout-edit-button" type="button">Edit layout</button></div>
+        <div class="layout-presets" role="group" aria-label="Layout presets"><button type="button" data-layout-preset="balanced">Balanced</button><button type="button" data-layout-preset="focus">Focus</button><button type="button" data-layout-preset="minimal">Minimal</button></div>
         <label class="setting-row compact-row"><span><strong>Lock position</strong><small>Prevent widgets from moving</small></span><input type="checkbox" id="layout-lock-toggle" /></label>
         <div class="visibility-list" role="group" aria-label="Show or hide page widgets">
           <label><input type="checkbox" data-visibility="topbar" checked /> Header</label>
@@ -242,8 +237,6 @@
         <small>Move your Daymark setup to another browser</small>
         <div class="backup-actions"><button class="upload-button" id="export-button" type="button">Export settings</button><label class="upload-button" for="import-input">Import settings</label><input class="file-input" id="import-input" type="file" accept="application/json" /></div>
       </div>
-<<<<<<< Updated upstream
-=======
       <div class="setting-block">
         <strong>Data</strong>
         <small>Manage content stored in this browser</small>
@@ -253,7 +246,6 @@
         <strong>Privacy</strong>
         <p>Daymark stores your settings, tasks, notes, and shortcuts in Chrome storage. Weather requests go to Open-Meteo only when you set or refresh a city. Bookmark import reads Chrome bookmarks only when you choose Import bookmarks.</p>
       </div>
->>>>>>> Stashed changes
       <button class="defaults-button" id="defaults-button" type="button">Restore all defaults</button>
       <button class="reset-button" id="reset-button" type="button">Restore starter links</button>
     </aside>
