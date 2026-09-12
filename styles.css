@@ -54,6 +54,7 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .text-button, .reset-button { border: 0; color: var(--accent); background: transparent; font-size: 12px; }
 .text-button:hover, .reset-button:hover { text-decoration: underline; }
 .link-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.link-group-heading { grid-column: 1 / -1; margin-top: 10px; color: var(--accent); font: 10px 'Courier New', monospace; letter-spacing: .1em; text-transform: uppercase; }
 .link-card { position: relative; display: flex; align-items: center; gap: 13px; min-height: 75px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 16px; color: var(--ink); background: rgba(255,255,255,.075); text-decoration: none; transition: border .2s, background .2s, transform .2s; }
 .link-card:hover { border-color: var(--accent); background: rgba(255,255,255,.13); transform: translateY(-3px); }
 .link-icon { display: grid; width: 35px; height: 35px; flex: 0 0 auto; place-items: center; border-radius: 4px; color: var(--accent-ink); background: var(--accent); font-size: 14px; font-weight: 700; text-transform: uppercase; }
@@ -79,6 +80,14 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .task-list input { accent-color: var(--accent); }
 .task-list li.completed span { color: var(--muted); text-decoration: line-through; }
 .task-list li button { border: 0; color: var(--muted); background: transparent; cursor: pointer; }
+<<<<<<< Updated upstream
+=======
+.task-list li .move-task-up { margin-left: auto; }
+.task-priority { color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; text-transform: uppercase; }
+.priority-high { color: #ffc0ad; }
+.priority-low { opacity: .65; }
+.task-repeat { color: var(--accent); font-family: 'Courier New', monospace; font-size: 9px; }
+>>>>>>> Stashed changes
 #notes-input { width: 100%; min-height: 104px; resize: vertical; border: 0; outline: 0; color: var(--ink); background: transparent; font: inherit; font-size: 12px; line-height: 1.6; }
 #notes-input::placeholder { color: var(--muted); }
 .timer-card, .weather-card { text-align: center; }
@@ -91,6 +100,15 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .timer-actions button { padding: 7px 11px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: rgba(255,255,255,.08); font-size: 10px; }
 .timer-actions button:first-child { color: var(--accent-ink); background: var(--accent); }
 .weather-reading { margin: 8px 0 13px; color: var(--ink); font-size: 32px; letter-spacing: -.06em; }
+<<<<<<< Updated upstream
+=======
+.weather-detail { min-height: 15px; margin: -7px 0 13px; color: var(--muted); font-family: 'Courier New', monospace; font-size: 9px; }
+.weather-forecast { display: flex; justify-content: center; gap: 8px; margin-bottom: 13px; }
+.weather-forecast span { display: grid; gap: 3px; color: var(--muted); font: 9px 'Courier New', monospace; }
+.weather-forecast strong { color: var(--accent); font-weight: 400; }
+.icon-text-button { border: 0; color: var(--accent); background: transparent; font: 10px 'Courier New', monospace; }
+.icon-text-button:hover { text-decoration: underline; }
+>>>>>>> Stashed changes
 .weather-card .inline-form { margin-top: auto; }
 .footer { margin-top: auto; padding-top: 65px; gap: 30px; color: var(--muted); }
 .quote-wrap { display: flex; align-items: flex-start; gap: 10px; max-width: 550px; }
@@ -153,6 +171,10 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 .range-setting input { width: 100%; margin: 12px 0 0; accent-color: var(--accent); cursor: pointer; }
 .select-setting { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--muted); font-size: 11px; }
 .select-setting select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: rgba(0,0,0,.15); font: inherit; font-size: 11px; }
+.small-number { width: 54px; padding: 6px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: rgba(0,0,0,.15); font: inherit; font-size: 11px; }
+.color-setting { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; color: var(--muted); font-size: 11px; }
+.color-setting input { width: 40px; height: 26px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: transparent; cursor: pointer; }
+.privacy-block p { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
 .backup-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .backup-actions .upload-button { margin-top: 0; }
 .quote-toggle { flex: 1 1 150px; margin: 0; padding: 0; border: 0; }
@@ -182,3 +204,6 @@ h2 { margin-bottom: 0; font-size: 18px; font-weight: 600; letter-spacing: -.03em
 
 body[data-theme='night'] { --background: #152333; --panel: rgba(18, 31, 48, .94); --accent: #a6d5ec; --accent-ink: #122333; }
 body[data-theme='clay'] { --background: #3c2925; --panel: rgba(57, 36, 31, .94); --accent: #f2ba8d; --accent-ink: #39231d; }
+body[data-text-size='large'] { font-size: 106%; }
+body[data-text-size='larger'] { font-size: 115%; }
+body.high-contrast { --ink: #ffffff; --muted: #e1e8e0; --line: rgba(255,255,255,.42); --panel: rgba(7, 18, 31, .98); }

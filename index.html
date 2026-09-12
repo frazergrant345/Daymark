@@ -45,7 +45,11 @@
         <article class="widget-card" data-widget="todo">
           <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag to-do widget">⠿</button>
           <div class="widget-heading"><h2>Today</h2><span class="widget-count" id="task-count">0</span></div>
+<<<<<<< Updated upstream
           <form class="inline-form" id="task-form"><input id="task-input" maxlength="80" placeholder="Add a task" aria-label="Add a task" /><button type="submit" aria-label="Add task">+</button></form>
+=======
+          <form class="inline-form" id="task-form"><input id="task-input" maxlength="80" placeholder="Add a task" aria-label="Add a task" /><select id="task-priority" aria-label="Task priority"><option value="normal">Normal</option><option value="high">High</option><option value="low">Low</option></select><select id="task-repeat" aria-label="Task repeat"><option value="none">Once</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select><button type="submit" aria-label="Add task">+</button></form>
+>>>>>>> Stashed changes
           <ul class="task-list" id="task-list"></ul>
         </article>
         <article class="widget-card" data-widget="notes">
@@ -64,6 +68,11 @@
           <button class="drag-handle" type="button" title="Drag to move" aria-label="Drag weather widget">⠿</button>
           <div class="widget-heading"><h2>Weather</h2><span class="save-status" id="weather-location">Set a city</span></div>
           <div class="weather-reading" id="weather-reading">--°</div>
+<<<<<<< Updated upstream
+=======
+          <p class="weather-detail" id="weather-detail">Set a city to begin</p>
+          <div class="weather-forecast" id="weather-forecast"></div>
+>>>>>>> Stashed changes
           <form class="inline-form" id="weather-form"><input id="weather-input" maxlength="40" placeholder="City" aria-label="Weather city" /><button type="submit" aria-label="Set city">↗</button></form>
         </article>
       </section>
@@ -104,6 +113,8 @@
           <option value="◒">◒ Media</option>
           <option value="↗">↗ Link</option>
         </select>
+        <label for="link-group">Group</label>
+        <input id="link-group" maxlength="20" placeholder="e.g. Work" />
         <button class="primary-button" value="default" type="submit">Add shortcut</button>
       </form>
     </dialog>
@@ -182,6 +193,10 @@
           <button class="swatch swatch-clay" data-theme="clay" type="button" aria-label="Clay theme"></button>
         </div>
       </div>
+      <div class="setting-block">
+        <strong>Accent</strong>
+        <label class="color-setting" for="accent-color"><span>Custom accent color</span><input id="accent-color" type="color" value="#d5e78d" /></label>
+      </div>
       <div class="setting-block greeting-settings">
         <strong>Greeting</strong>
         <small>Leave empty to use the automatic greeting</small>
@@ -192,10 +207,15 @@
         <strong>Weather location</strong>
         <small>Used only for the weather widget</small>
         <input class="text-input" id="weather-city-input" maxlength="40" placeholder="e.g. London" />
+        <label class="select-setting" for="weather-unit">Temperature
+          <select id="weather-unit"><option value="celsius">Celsius</option><option value="fahrenheit">Fahrenheit</option></select>
+        </label>
       </div>
       <div class="setting-block">
         <strong>Focus</strong>
         <label class="setting-row compact-row"><span><strong>Completion notification</strong><small>Let Daymark know when focus time ends</small></span><input type="checkbox" id="timer-notification-toggle" /></label>
+        <label class="setting-row compact-row"><span><strong>Work and break cycles</strong><small>Start a short break after focus ends</small></span><input type="checkbox" id="timer-cycles-toggle" /></label>
+        <label class="select-setting" for="timer-break-input">Break minutes <input class="small-number" id="timer-break-input" type="number" min="1" max="30" value="5" /></label>
       </div>
       <div class="setting-block">
         <strong>Shortcuts</strong>
@@ -209,16 +229,31 @@
       <div class="setting-block">
         <strong>Accessibility</strong>
         <label class="setting-row compact-row"><span><strong>Reduce motion</strong><small>Remove non-essential animations</small></span><input type="checkbox" id="reduced-motion-toggle" /></label>
+        <label class="setting-row compact-row"><span><strong>High contrast</strong><small>Increase separation between text and surfaces</small></span><input type="checkbox" id="high-contrast-toggle" /></label>
+        <label class="select-setting" for="text-size">Text size <select id="text-size"><option value="normal">Normal</option><option value="large">Large</option><option value="larger">Larger</option></select></label>
       </div>
       <div class="setting-block">
         <strong>View</strong>
         <label class="setting-row compact-row"><span><strong>Minimal mode</strong><small>Keep only time, search, and shortcuts</small></span><input type="checkbox" id="minimal-mode-toggle" /></label>
+        <label class="setting-row compact-row"><span><strong>Sync settings</strong><small>Use Chrome Sync for settings and shortcuts</small></span><input type="checkbox" id="sync-settings-toggle" /></label>
       </div>
       <div class="setting-block backup-settings">
         <strong>Backup</strong>
         <small>Move your Daymark setup to another browser</small>
         <div class="backup-actions"><button class="upload-button" id="export-button" type="button">Export settings</button><label class="upload-button" for="import-input">Import settings</label><input class="file-input" id="import-input" type="file" accept="application/json" /></div>
       </div>
+<<<<<<< Updated upstream
+=======
+      <div class="setting-block">
+        <strong>Data</strong>
+        <small>Manage content stored in this browser</small>
+        <div class="backup-actions"><button class="upload-button" id="clear-notes-button" type="button">Clear notes</button><button class="upload-button" id="clear-completed-button" type="button">Clear completed</button><button class="upload-button" id="clear-data-button" type="button">Clear all data</button></div>
+      </div>
+      <div class="setting-block privacy-block">
+        <strong>Privacy</strong>
+        <p>Daymark stores your settings, tasks, notes, and shortcuts in Chrome storage. Weather requests go to Open-Meteo only when you set or refresh a city. Bookmark import reads Chrome bookmarks only when you choose Import bookmarks.</p>
+      </div>
+>>>>>>> Stashed changes
       <button class="defaults-button" id="defaults-button" type="button">Restore all defaults</button>
       <button class="reset-button" id="reset-button" type="button">Restore starter links</button>
     </aside>
