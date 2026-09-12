@@ -10,19 +10,34 @@ Daymark is a calm, personal dashboard that replaces your browser's new-tab page 
 - Live date, time, and automatic or custom greetings
 - Web search from the new-tab page
 - Starter shortcuts for Gmail, Calendar, Notes, and GitHub
+<<<<<<< Updated upstream
 - Add, remove, and restore custom shortcuts
 - Daily task list with completion tracking
 - Persistent notes area
 - 25-minute focus timer with start, pause, and reset controls
 - Focus completion notifications
 - Weather lookup by city using Open-Meteo
+=======
+- Add, edit, remove, restore, import, and group custom shortcuts
+- Daily task list with priorities, reordering, and daily or weekly recurring tasks
+- Persistent notes area
+- Focus timer with custom durations, presets, and optional work-break cycles
+- Focus completion notifications
+- Weather lookup with conditions, last-updated time, unit selection, manual refresh, and a three-day forecast
+>>>>>>> Stashed changes
 - Google, DuckDuckGo, Bing, Kagi, and custom search engines
 - Keyboard shortcuts for search, tasks, shortcuts, and a command palette
 - Optional daily task rollover with a browsable 30-day task history
 - Optional Chrome bookmark import
 - Quote refresh and daily rotation controls
 - First-run setup, minimal mode, and reduced-motion support
+<<<<<<< Updated upstream
 - Theme options, wallpaper presets, and custom image wallpapers
+=======
+- Chrome Sync for settings and shortcuts, excluding local wallpaper images
+- Custom accent colors, high-contrast mode, and larger text settings
+- Theme options, wallpaper presets, and up to five rotating custom wallpapers
+>>>>>>> Stashed changes
 - Wallpaper blur, scale, and position controls
 - Customizable widget visibility and drag-and-drop layout
 - 12-hour or 24-hour clock display
