@@ -67,6 +67,20 @@ function todayKey() {
   return new Date().toLocaleDateString('en-CA');
 }
 
+let toastTimer = null;
+function showToast(message) {
+  const toast = document.querySelector('#toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.hidden = false;
+  requestAnimationFrame(() => toast.classList.add('visible'));
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('visible');
+    setTimeout(() => { toast.hidden = true; }, 200);
+  }, 5000);
+}
+
 function saveState() {
   const storage = globalThis.chrome?.storage?.local;
   try {
@@ -82,7 +96,12 @@ function saveState() {
   if (state.syncSettings && globalThis.chrome?.storage?.sync) {
     try {
       const syncState = { ...state, wallpaper: '', wallpaperCollection: [] };
-      chrome.storage.sync.set({ hearthState: syncState });
+      chrome.storage.sync.set({ hearthState: syncState }, () => {
+        if (chrome.runtime.lastError) {
+          console.warn('Daymark: Failed to save sync state', chrome.runtime.lastError);
+          showToast('Sync failed: your settings may be too large for Chrome sync storage.');
+        }
+      });
     } catch (err) {
       console.warn('Daymark: Failed to save sync state', err);
     }
@@ -648,7 +667,6 @@ safeOn('#search-form', 'submit', (event) => {
 safeOn('#add-link-button', 'click', () => openLinkDialog());
 
 safeOn('#link-form', 'submit', (event) => {
-  if (event.submitter?.value === 'cancel') return;
   event.preventDefault();
   const url = document.querySelector('#link-url')?.value.trim() || '';
   const name = document.querySelector('#link-name')?.value.trim() || 'Shortcut';
@@ -1061,12 +1079,15 @@ safeOn('#onboarding-form', 'submit', (event) => {
   event.preventDefault();
   state.greeting = document.querySelector('#onboarding-name')?.value.trim() || '';
   state.searchEngine = document.querySelector('#onboarding-search-engine')?.value || 'google';
+  state.weather.unit = document.querySelector('#onboarding-unit')?.value || 'celsius';
   state.onboardingComplete = true;
   const city = document.querySelector('#onboarding-city')?.value.trim();
   if (city) loadWeather(city);
   document.querySelector('#onboarding-dialog')?.close();
   const greetingInput = document.querySelector('#greeting-input');
   if (greetingInput) greetingInput.value = state.greeting;
+  const unitInput = document.querySelector('#weather-unit');
+  if (unitInput) unitInput.value = state.weather.unit;
   applyPreferences();
   updateClock();
   saveState();

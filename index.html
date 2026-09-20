@@ -250,6 +250,7 @@
       <button class="reset-button" id="reset-button" type="button">Restore starter links</button>
     </aside>
     <div class="scrim" id="scrim"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
     <dialog id="command-dialog" class="dialog command-dialog" aria-labelledby="command-title">
       <div class="dialog-heading"><div><p class="eyebrow">Quick actions</p><h2 id="command-title">Command palette</h2></div><button class="close-button" id="close-command-dialog" type="button" aria-label="Close command palette">×</button></div>
       <div class="command-list"><button type="button" data-command="search">Search the web <kbd>/</kbd></button><button type="button" data-command="task">Add a task <kbd>N</kbd></button><button type="button" data-command="settings">Open settings <kbd>S</kbd></button><button type="button" data-command="minimal">Toggle minimal mode <kbd>M</kbd></button></div>
@@ -259,7 +260,7 @@
       <div class="task-history-list" id="task-history-list"></div>
     </dialog>
     <dialog id="onboarding-dialog" class="dialog onboarding-dialog" aria-labelledby="onboarding-title">
-      <form method="dialog" id="onboarding-form"><div class="dialog-heading"><div><p class="eyebrow">Daymark V2</p><h2 id="onboarding-title">Make this yours</h2></div></div><label for="onboarding-name">Greeting</label><input id="onboarding-name" maxlength="60" placeholder="e.g. Welcome back, Alex." /><label for="onboarding-city">Weather city</label><input id="onboarding-city" maxlength="40" placeholder="e.g. London" /><label for="onboarding-search-engine">Search engine</label><select id="onboarding-search-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option></select><button class="primary-button" type="submit">Start my day</button><button class="reset-button" id="skip-onboarding-button" type="button">Skip for now</button></form>
+      <form method="dialog" id="onboarding-form"><div class="dialog-heading"><div><p class="eyebrow">Daymark V2</p><h2 id="onboarding-title">Make this yours</h2></div></div><label for="onboarding-name">Greeting</label><input id="onboarding-name" maxlength="60" placeholder="e.g. Welcome back, Alex." /><label for="onboarding-city">Weather city</label><input id="onboarding-city" maxlength="40" placeholder="e.g. London" /><label for="onboarding-unit">Temperature unit</label><select id="onboarding-unit"><option value="celsius">Celsius (°C)</option><option value="fahrenheit">Fahrenheit (°F)</option></select><label for="onboarding-search-engine">Search engine</label><select id="onboarding-search-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option></select><button class="primary-button" type="submit">Start my day</button><button class="reset-button" id="skip-onboarding-button" type="button">Skip for now</button></form>
     </dialog>
     <script src="app.js"></script>
   </body>
